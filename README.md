@@ -12,7 +12,7 @@ Building and running this kernel module is pretty straightforward. I really have
 
 ```sh
 # Install build dependencies
-apt install build-essential libssl-dev python3 flex bison bc libncurses-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev libiberty-dev autoconf llvm clang lld git
+apt install build-essential libssl-dev python3 flex bison bc libncurses-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev libiberty-dev autoconf llvm clang lld git curl
 
 # Install Rust, rust-src, and bindgen
 # For non-debian distros, check https://docs.kernel.org/rust/quick-start.html#distributions
@@ -21,10 +21,8 @@ apt install rustc rust-src bindgen
 # In the future, you can probably get away with downloading the 6.18 tarball once it comes out, but for reproducability, this is what I built on
 # Clone Linux
 cd ~
-git clone https://github.com/torvalds/linux.git --depth 1 && cd linux
-
-# checkout 6.18-rc3
-git checkout dcb6fa37fd7bc9c3d2b066329b0d27dedf8becaa
+curl -LO "https://github.com/torvalds/linux/archive/refs/tags/v6.18-rc3.tar.gz"
+tar xvf v6.18-rc3.tar.gz && rm v6.18-rc3.tar.gz && cd linux-6.18-rc3/
 
 # Make Rust Available
 make LLVM=1 rustavailable
@@ -47,7 +45,7 @@ reboot
 cd ~
 git clone https://github.com/TabulateJarl8/devexec.git && cd devexec
 # replace ../linux with the path to your kernel source
-make KDIR=../linux LLVM=1
+make KDIR=../linux-6.18-rc3/ LLVM=1
 
 # load module
 insmod devexec.ko
